@@ -403,9 +403,15 @@ export class FieldApi<
     return () => {
       const preserveValue = this.options.preserveValue
       unsubscribe()
-      if (!preserveValue) {
-        this.form.deleteField(this.name)
+      if (preserveValue) {
+        return
       }
+      const formDefault = getBy(this.form.options.defaultValues, this.name)
+      if (formDefault !== undefined) {
+        this.setValue(formDefault as never)
+        return
+      }
+      this.form.deleteField(this.name)
     }
   }
 
